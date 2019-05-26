@@ -4,6 +4,7 @@ import Browser
 import Html exposing (Attribute, Html, a, button, canvas, div, h1, h3, img, input, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
+import Random
 
 
 port toImg : List String -> Cmd msg
@@ -43,6 +44,8 @@ type Msg
     | ChangeMouth
     | ToImg
     | Reset
+    | Random
+    | NewFace Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -68,6 +71,12 @@ update msg model =
 
         Reset ->
             ( { model | isCreatedImg = False }, resetImg "リセット" )
+
+        Random ->
+            ( { model | isCreatedImg = False }, Random.generate NewFace (Random.int 1 2) )
+
+        NewFace new ->
+            ( { model | face = new }, Cmd.none )
 
 
 getFaceNum : Int -> String
@@ -112,6 +121,9 @@ view model =
                 , a
                     [ onClick ChangeMouth ]
                     [ img [ class "change", src "../public/mouth-button.JPEG" ] [] ]
+                , a
+                    [ onClick Random ]
+                    [ img [ class "change", src "../public/random.JPEG" ] [] ]
                 ]
             , div
                 [ class "phrase-input" ]
