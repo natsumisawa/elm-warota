@@ -125,7 +125,7 @@ view model =
             , h1 [] [ validatePhrase model ]
             ]
         , div [] [ showImgButton model ]
-        , div [ class "canvas" ]
+        , div []
             [ img [ id "new-img" ] []
             , a [ id "download", download "output.PNG" ] [ text "画像をダウンロード" ]
             ]
