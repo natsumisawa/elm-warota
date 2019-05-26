@@ -1,12 +1,12 @@
-port module Main exposing (Model, Msg(..), cache, init, main, update, validatePhrase, view, viewEyeImg, viewFaceImg, viewMouthImg)
+port module Main exposing (Model, Msg(..), init, main, update, validatePhrase, view, viewEyeImg, viewFaceImg, viewMouthImg)
 
 import Browser
-import Html exposing (Attribute, Html, a, canvas, div, h1, img, input, text)
+import Html exposing (Attribute, Html, a, canvas, div, h1, h3, img, input, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 
 
-port cache : String -> Cmd msg
+port toImg : List String -> Cmd msg
 
 
 
@@ -37,7 +37,7 @@ type Msg
     | ChangeColor
     | ChangeEye
     | ChangeMouth
-    | Save
+    | ToImg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -58,8 +58,17 @@ update msg model =
         ChangeMouth ->
             ( { model | mouth = model.mouth + 1 }, Cmd.none )
 
-        Save ->
-            ( model, cache "保存したみ" )
+        ToImg ->
+            ( model, toImg [ model.phrase, getFace model.face, String.fromInt model.color, String.fromInt model.mouth ] )
+
+
+getFace : Int -> String
+getFace faceNum =
+    if modBy 2 faceNum == 0 then
+        "warota"
+
+    else
+        "a-ne"
 
 
 
@@ -85,25 +94,29 @@ view model =
                 , a
                     [ onClick ChangeMouth ]
                     [ img [ class "change", src "../public/mouth-button.JPEG" ] [] ]
-                , a
-                    [ onClick Save ]
-                    [ text "SAVE" ]
                 ]
             , div
-                [ class "warota-component" ]
+                [ class "phrase-input" ]
                 [ input [ placeholder "phrase", value model.phrase, onInput Phrase ] []
+                ]
+            , div []
+                [ a
+                    [ onClick ToImg ]
+                    [ text "画像に変換" ]
                 ]
             ]
         , div [ class "generate" ]
-            [ canvas [ id "generate-canvas" ]
-                [ text "アワーーーーー"
-                , viewFaceImg model
-                , viewEyeImg model
-                , viewMouthImg model
-                , h1 [] [ validatePhrase model ]
-                ]
-            , img [ id "new-img" ] []
+            [ viewFaceImg model
+            , viewEyeImg model
+            , viewMouthImg model
+            , h1 [] [ validatePhrase model ]
             ]
+        , div [ class "canvas" ]
+            [ img [ id "new-img" ] []
+            , a [ id "download", download "output.PNG" ] [ text "画像をダウンロード" ]
+            ]
+        , div []
+            [ canvas [ id "generate-canvas" ] [] ]
         ]
 
 

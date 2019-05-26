@@ -9,13 +9,10 @@ div.header {
   padding: 100px;
 }
 
-/* div.warota-component {
-  margin: 100px
-} */
-
-div.warota-component > h1 {
+div.phrase-input > h1 {
   font-size: 30px;
-  color: #000000
+  color: #000000;
+  margin: 10px;
 }
 
 img.change {
@@ -75,6 +72,6 @@ img.mouth {
   top: 20%;
 }
 
-canvas {
-  position: relative;
+#generate-canvas {
+  visibility: hidden;
 }
