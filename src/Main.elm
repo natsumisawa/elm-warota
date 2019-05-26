@@ -133,7 +133,7 @@ view model =
                 ]
             , div
                 [ class "phrase-input" ]
-                [ input [ placeholder "phrase", value model.phrase, onInput Phrase ] []
+                [ input [ placeholder "くちぐせを入れてね", value model.phrase, onInput Phrase ] []
                 ]
             ]
         , div [ class "generate" ]
