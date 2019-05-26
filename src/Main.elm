@@ -46,6 +46,8 @@ type Msg
     | Reset
     | Random
     | NewFace Int
+    | NewColor Int
+    | NewMouth Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -67,16 +69,26 @@ update msg model =
             ( { model | mouth = model.mouth + 1 }, Cmd.none )
 
         ToImg ->
-            ( { model | isCreatedImg = True }, toImg [ model.phrase, getFaceNum model.face, getColorNum model.color, getMouthNum model.mouth ] )
+            ( { model | isCreatedImg = True }, toImg [ model.phrase, getFaceNum model.face, String.fromInt <| modBy 2 model.color, String.fromInt <| modBy 3 model.mouth ] )
 
         Reset ->
             ( { model | isCreatedImg = False }, resetImg "リセット" )
 
         Random ->
-            ( { model | isCreatedImg = False }, Random.generate NewFace (Random.int 1 2) )
+            ( { model | isCreatedImg = False }, Random.generate NewFace (Random.int 1 10) )
 
         NewFace new ->
-            ( { model | face = new }, Cmd.none )
+            ( { model | face = modBy 2 new }, Random.generate NewColor (Random.int 1 10) )
+
+        NewColor new ->
+            ( { model | color = modBy 2 new }, Random.generate NewMouth (Random.int 1 10) )
+
+        NewMouth new ->
+            ( { model | mouth = modBy 3 new }, Cmd.none )
+
+
+
+-- TODO mapでできそう？
 
 
 getFaceNum : Int -> String
@@ -86,16 +98,6 @@ getFaceNum face =
 
     else
         "a-ne"
-
-
-getColorNum : Int -> String
-getColorNum color =
-    String.fromInt <| modBy 2 color
-
-
-getMouthNum : Int -> String
-getMouthNum mouth =
-    String.fromInt <| modBy 3 mouth
 
 
 
