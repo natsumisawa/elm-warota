@@ -47,6 +47,7 @@ type Msg
     | Random
     | NewFace Int
     | NewColor Int
+    | NewEye Int
     | NewMouth Int
 
 
@@ -78,7 +79,10 @@ update msg model =
             ( { model | isCreatedImg = False }, Random.generate NewFace (Random.int 1 10) )
 
         NewFace new ->
-            ( { model | face = modBy 2 new }, Random.generate NewColor (Random.int 1 10) )
+            ( { model | face = modBy 2 new }, Random.generate NewEye (Random.int 1 10) )
+
+        NewEye new ->
+            ( { model | eye = modBy 5 new }, Random.generate NewColor (Random.int 1 30) )
 
         NewColor new ->
             ( { model | color = modBy 2 new }, Random.generate NewMouth (Random.int 1 10) )
@@ -88,7 +92,7 @@ update msg model =
 
 
 
--- TODO mapでできそう？
+-- TODO random mapでできそう？
 
 
 getFaceNum : Int -> String
