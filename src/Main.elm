@@ -1,7 +1,7 @@
 port module Main exposing (Model, Msg(..), init, main, update, validatePhrase, view, viewEyeImg, viewFaceImg, viewMouthImg)
 
 import Browser
-import Html exposing (Attribute, Html, a, canvas, div, h1, h3, img, input, text)
+import Html exposing (Attribute, Html, a, button, canvas, div, h1, h3, img, input, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 
@@ -117,12 +117,6 @@ view model =
                 [ class "phrase-input" ]
                 [ input [ placeholder "phrase", value model.phrase, onInput Phrase ] []
                 ]
-            , div []
-                [ a
-                    [ onClick ToImg ]
-                    [ text "画像に変換" ]
-                ]
-            , div [] [ showResetButton model ]
             ]
         , div [ class "generate" ]
             [ viewFaceImg model
@@ -130,6 +124,7 @@ view model =
             , viewMouthImg model
             , h1 [] [ validatePhrase model ]
             ]
+        , div [] [ showImgButton model ]
         , div [ class "canvas" ]
             [ img [ id "new-img" ] []
             , a [ id "download", download "output.PNG" ] [ text "画像をダウンロード" ]
@@ -167,13 +162,13 @@ viewMouthImg model =
     img [ class "mouth", src <| "../public/mouth" ++ String.fromInt (modBy 3 model.mouth) ++ ".PNG" ] []
 
 
-showResetButton : Model -> Html Msg
-showResetButton model =
+showImgButton : Model -> Html Msg
+showImgButton model =
     if model.isCreatedImg then
-        a [ onClick Reset ] [ text "リセット" ]
+        button [ onClick Reset ] [ text "リセット" ]
 
     else
-        a [] []
+        button [ onClick ToImg ] [ text "画像に変換" ]
 
 
 
