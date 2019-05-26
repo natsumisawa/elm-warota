@@ -1,9 +1,8 @@
-import './main.css';
-import { Elm } from './Main.elm';
-import registerServiceWorker from './registerServiceWorker';
+require('./main.scss');
+
+const { Elm } = require('./Main.elm');
+const mountNode = document.getElementById('main');
 
 Elm.Main.init({
-  node: document.getElementById('root')
+  node: document.getElementById('main')
 });
-
-registerServiceWorker();

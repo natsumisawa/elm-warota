@@ -68,16 +68,16 @@ view model =
             , div [ class "change-button" ]
                 [ a
                     [ onClick ChangeFace ]
-                    [ img [ class "change", src "warota-face.JPEG" ] [] ]
+                    [ img [ class "change", src "../public/warota-face.JPEG" ] [] ]
                 , a
                     [ onClick ChangeColor ]
-                    [ img [ class "change", src "color-button.JPEG" ] [] ]
+                    [ img [ class "change", src "../public/color-button.JPEG" ] [] ]
                 , a
                     [ onClick ChangeEye ]
-                    [ img [ class "change", src "eye-button.JPEG" ] [] ]
+                    [ img [ class "change", src "../public/eye-button.JPEG" ] [] ]
                 , a
                     [ onClick ChangeMouth ]
-                    [ img [ class "change", src "mouth-button.JPEG" ] [] ]
+                    [ img [ class "change", src "../public/mouth-button.JPEG" ] [] ]
                 ]
             , div
                 [ class "warota-component" ]
@@ -105,20 +105,20 @@ validatePhrase model =
 viewFaceImg : Model -> Html Msg
 viewFaceImg model =
     if modBy 2 model.face == 0 then
-        img [ src <| "./warota" ++ String.fromInt (modBy 2 model.color) ++ ".PNG" ] []
+        img [ src <| "../public/warota" ++ String.fromInt (modBy 2 model.color) ++ ".PNG" ] []
 
     else
-        img [ src <| "./a-ne" ++ String.fromInt (modBy 2 model.color) ++ ".PNG" ] []
+        img [ src <| "../public/a-ne" ++ String.fromInt (modBy 2 model.color) ++ ".PNG" ] []
 
 
 viewEyeImg : Model -> Html Msg
 viewEyeImg model =
-    img [ class <| "eye" ++ String.fromInt (modBy 5 model.eye), src "./eye.PNG" ] []
+    img [ class <| "eye" ++ String.fromInt (modBy 5 model.eye), src "../public/eye.PNG" ] []
 
 
 viewMouthImg : Model -> Html Msg
 viewMouthImg model =
-    img [ class "mouth", src <| "./mouth" ++ String.fromInt (modBy 3 model.mouth) ++ ".PNG" ] []
+    img [ class "mouth", src <| "../public/mouth" ++ String.fromInt (modBy 3 model.mouth) ++ ".PNG" ] []
 
 
 
