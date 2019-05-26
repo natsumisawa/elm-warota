@@ -28,3 +28,10 @@ app.ports.toImg.subscribe(function(data) {
   document.getElementById("new-img").src = png;
   document.getElementById("download").href = png;
 })
+
+app.ports.resetImg.subscribe(function(data) {
+  var canvas = document.getElementById('generate-canvas');
+  if ( ! canvas || ! canvas.getContext ) { return false; }
+  var ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+});

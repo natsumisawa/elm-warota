@@ -9,6 +9,9 @@ import Html.Events exposing (onClick, onInput)
 port toImg : List String -> Cmd msg
 
 
+port resetImg : String -> Cmd msg
+
+
 
 ---- MODEL ----
 
@@ -19,12 +22,13 @@ type alias Model =
     , color : Int
     , eye : Int
     , mouth : Int
+    , isCreatedImg : Bool
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { phrase = "", face = 1, color = 1, eye = 1, mouth = 1 }, Cmd.none )
+    ( { phrase = "", face = 1, color = 1, eye = 1, mouth = 1, isCreatedImg = False }, Cmd.none )
 
 
 
@@ -38,6 +42,7 @@ type Msg
     | ChangeEye
     | ChangeMouth
     | ToImg
+    | Reset
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -59,16 +64,29 @@ update msg model =
             ( { model | mouth = model.mouth + 1 }, Cmd.none )
 
         ToImg ->
-            ( model, toImg [ model.phrase, getFace model.face, String.fromInt model.color, String.fromInt model.mouth ] )
+            ( { model | isCreatedImg = True }, toImg [ model.phrase, getFaceNum model.face, getColorNum model.color, getMouthNum model.mouth ] )
+
+        Reset ->
+            ( { model | isCreatedImg = False }, resetImg "リセット" )
 
 
-getFace : Int -> String
-getFace faceNum =
-    if modBy 2 faceNum == 0 then
+getFaceNum : Int -> String
+getFaceNum face =
+    if modBy 2 face == 0 then
         "warota"
 
     else
         "a-ne"
+
+
+getColorNum : Int -> String
+getColorNum color =
+    String.fromInt <| modBy 2 color
+
+
+getMouthNum : Int -> String
+getMouthNum mouth =
+    String.fromInt <| modBy 3 mouth
 
 
 
@@ -104,6 +122,7 @@ view model =
                     [ onClick ToImg ]
                     [ text "画像に変換" ]
                 ]
+            , div [] [ showResetButton model ]
             ]
         , div [ class "generate" ]
             [ viewFaceImg model
@@ -146,6 +165,15 @@ viewEyeImg model =
 viewMouthImg : Model -> Html Msg
 viewMouthImg model =
     img [ class "mouth", src <| "../public/mouth" ++ String.fromInt (modBy 3 model.mouth) ++ ".PNG" ] []
+
+
+showResetButton : Model -> Html Msg
+showResetButton model =
+    if model.isCreatedImg then
+        a [ onClick Reset ] [ text "リセット" ]
+
+    else
+        a [] []
 
 
 
