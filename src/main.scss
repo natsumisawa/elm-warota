@@ -35,38 +35,42 @@ img {
   margin-top: 20px;
 }
 
+div.generate {
+  position: relative;
+}
+
 img.eye0 {
   position: absolute;
   left: 35%;
-  top: 60%;
+  top: 10%;
 }
 
 img.eye1 {
   position: absolute;
   left: 35%;
-  top: 57%;
 }
 
 img.eye2 {
   position: absolute;
   left: 37%;
-  top: 60%;
+  top: 10%;
 }
 
 img.eye3 {
   position: absolute;
   left: 37%;
-  top: 57%;
+  top: 5%;
 }
 
 img.eye4 {
   position: absolute;
   left: 40%;
-  top: 57%;
+  top: 5%;
 }
 
 img.mouth {
   position: absolute;
-  top : 72%;
   left: 40%;
+  right: 70%;
+  top: 20%;
 }

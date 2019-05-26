@@ -105,10 +105,10 @@ validatePhrase model =
 viewFaceImg : Model -> Html Msg
 viewFaceImg model =
     if modBy 2 model.face == 0 then
-        img [ src <| "../public/warota" ++ String.fromInt (modBy 2 model.color) ++ ".PNG" ] []
+        img [ class "face", src <| "../public/warota" ++ String.fromInt (modBy 2 model.color) ++ ".PNG" ] []
 
     else
-        img [ src <| "../public/a-ne" ++ String.fromInt (modBy 2 model.color) ++ ".PNG" ] []
+        img [ class "face", src <| "../public/a-ne" ++ String.fromInt (modBy 2 model.color) ++ ".PNG" ] []
 
 
 viewEyeImg : Model -> Html Msg
