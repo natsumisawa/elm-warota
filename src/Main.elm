@@ -1,9 +1,12 @@
-module Main exposing (Model, Msg(..), init, main, update, view)
+port module Main exposing (Model, Msg(..), cache, init, main, update, validatePhrase, view, viewEyeImg, viewFaceImg, viewMouthImg)
 
 import Browser
-import Html exposing (Attribute, Html, a, div, h1, img, input, text)
+import Html exposing (Attribute, Html, a, canvas, div, h1, img, input, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
+
+
+port cache : String -> Cmd msg
 
 
 
@@ -34,6 +37,7 @@ type Msg
     | ChangeColor
     | ChangeEye
     | ChangeMouth
+    | Save
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -53,6 +57,9 @@ update msg model =
 
         ChangeMouth ->
             ( { model | mouth = model.mouth + 1 }, Cmd.none )
+
+        Save ->
+            ( model, cache "保存したみ" )
 
 
 
@@ -78,6 +85,9 @@ view model =
                 , a
                     [ onClick ChangeMouth ]
                     [ img [ class "change", src "../public/mouth-button.JPEG" ] [] ]
+                , a
+                    [ onClick Save ]
+                    [ text "SAVE" ]
                 ]
             , div
                 [ class "warota-component" ]
@@ -85,10 +95,14 @@ view model =
                 ]
             ]
         , div [ class "generate" ]
-            [ viewFaceImg model
-            , viewEyeImg model
-            , viewMouthImg model
-            , h1 [] [ validatePhrase model ]
+            [ canvas [ id "generate-canvas" ]
+                [ text "アワーーーーー"
+                , viewFaceImg model
+                , viewEyeImg model
+                , viewMouthImg model
+                , h1 [] [ validatePhrase model ]
+                ]
+            , img [ id "new-img" ] []
             ]
         ]
 
