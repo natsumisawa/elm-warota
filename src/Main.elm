@@ -5,6 +5,8 @@ import Html exposing (Attribute, Html, a, button, canvas, div, h1, h3, img, inpu
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Random
+import Task
+import Time
 
 
 port toImg : List String -> Cmd msg
@@ -24,12 +26,13 @@ type alias Model =
     , eye : Int
     , mouth : Int
     , isCreatedImg : Bool
+    , poused : Bool
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { phrase = "", face = 1, color = 1, eye = 1, mouth = 1, isCreatedImg = False }, Cmd.none )
+    ( { phrase = "", face = 1, color = 1, eye = 1, mouth = 1, isCreatedImg = False, poused = False }, Cmd.none )
 
 
 
@@ -49,6 +52,9 @@ type Msg
     | NewColor Int
     | NewEye Int
     | NewMouth Int
+    | Move
+    | MoveEveryOneSec Time.Posix
+    | Stop
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -90,9 +96,18 @@ update msg model =
         NewMouth new ->
             ( { model | mouth = modBy 3 new }, Cmd.none )
 
+        Move ->
+            ( { model | poused = False }, Cmd.none )
+
+        MoveEveryOneSec time ->
+            ( model, Random.generate NewFace (Random.int 1 10) )
+
+        Stop ->
+            ( { model | poused = True }, Cmd.none )
 
 
--- TODO random mapでできそう？
+
+-- TODO random map?か関数合成
 
 
 getFaceNum : Int -> String
@@ -102,6 +117,19 @@ getFaceNum face =
 
     else
         "a-ne"
+
+
+
+---- SUBSCRIPTIONS ----
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    if model.poused then
+        Sub.none
+
+    else
+        Time.every 100 MoveEveryOneSec
 
 
 
@@ -130,6 +158,12 @@ view model =
                 , a
                     [ onClick Random ]
                     [ img [ class "change", src "../public/random.JPEG" ] [] ]
+                , a
+                    [ onClick Move ]
+                    [ img [ class "change", src "../public/move.JPEG" ] [] ]
+                , a
+                    [ onClick Stop ]
+                    [ text "とめる" ]
                 ]
             , div
                 [ class "phrase-input" ]
@@ -199,5 +233,5 @@ main =
         { view = view
         , init = \_ -> init
         , update = update
-        , subscriptions = always Sub.none
+        , subscriptions = subscriptions
         }
