@@ -29,7 +29,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { phrase = "", face = 1, color = 1, eye = 1, mouth = 1, isCreatedImg = False }, Cmd.none )
+    ( Model "" 1 1 1 1 False, Cmd.none )
 
 
 
@@ -52,25 +52,25 @@ type Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update msg ({ face, color, eye, mouth, phrase } as model) =
     case msg of
         Phrase input ->
             ( { model | phrase = input }, Cmd.none )
 
         ChangeFace ->
-            ( { model | face = model.face + 1 }, Cmd.none )
+            ( { model | face = face + 1 }, Cmd.none )
 
         ChangeColor ->
-            ( { model | color = model.color + 1 }, Cmd.none )
+            ( { model | color = color + 1 }, Cmd.none )
 
         ChangeEye ->
-            ( { model | eye = model.eye + 1 }, Cmd.none )
+            ( { model | eye = eye + 1 }, Cmd.none )
 
         ChangeMouth ->
-            ( { model | mouth = model.mouth + 1 }, Cmd.none )
+            ( { model | mouth = mouth + 1 }, Cmd.none )
 
         ToImg ->
-            ( { model | isCreatedImg = True }, toImg [ model.phrase, getFaceNum model.face, String.fromInt <| modBy 2 model.color, String.fromInt <| modBy 3 model.mouth ] )
+            ( { model | isCreatedImg = True }, toImg [ phrase, getFaceNum face, String.fromInt <| modBy 2 color, String.fromInt <| modBy 3 mouth ] )
 
         Reset ->
             ( { model | isCreatedImg = False }, resetImg "リセット" )
@@ -109,7 +109,7 @@ getFaceNum face =
 
 
 view : Model -> Html Msg
-view model =
+view { phrase, face, color, eye, mouth, isCreatedImg } =
     div []
         [ div [ class "header" ]
             [ h1 []
@@ -133,16 +133,16 @@ view model =
                 ]
             , div
                 [ class "phrase-input" ]
-                [ input [ placeholder "くちぐせを入れてね", value model.phrase, onInput Phrase ] []
+                [ input [ placeholder "くちぐせを入れてね", value phrase, onInput Phrase ] []
                 ]
             ]
         , div [ class "generate" ]
-            [ viewFaceImg model
-            , viewEyeImg model
-            , viewMouthImg model
-            , h1 [] [ validatePhrase model ]
+            [ viewFaceImg face color
+            , viewEyeImg eye
+            , viewMouthImg mouth
+            , h1 [] [ validatePhrase phrase ]
             ]
-        , div [] [ showImgButton model ]
+        , div [] [ showImgButton isCreatedImg ]
         , div []
             [ img [ id "new-img" ] []
             , a [ id "download", download "output.PNG" ] [ text "画像をダウンロード" ]
@@ -152,37 +152,37 @@ view model =
         ]
 
 
-validatePhrase : Model -> Html Msg
-validatePhrase model =
-    if model.phrase == "ワロタ" || model.phrase == "わろた" then
+validatePhrase : String -> Html Msg
+validatePhrase phrase =
+    if phrase == "ワロタ" || phrase == "わろた" then
         text "著作権的なアレでダメです"
 
     else
-        text model.phrase
+        text phrase
 
 
-viewFaceImg : Model -> Html Msg
-viewFaceImg model =
-    if modBy 2 model.face == 0 then
-        img [ class "face", src <| "../public/warota" ++ String.fromInt (modBy 2 model.color) ++ ".PNG" ] []
+viewFaceImg : Int -> Int -> Html Msg
+viewFaceImg face color =
+    if modBy 2 face == 0 then
+        img [ class "face", src <| "../public/warota" ++ String.fromInt (modBy 2 color) ++ ".PNG" ] []
 
     else
-        img [ class "face", src <| "../public/a-ne" ++ String.fromInt (modBy 2 model.color) ++ ".PNG" ] []
+        img [ class "face", src <| "../public/a-ne" ++ String.fromInt (modBy 2 color) ++ ".PNG" ] []
 
 
-viewEyeImg : Model -> Html Msg
-viewEyeImg model =
-    img [ class <| "eye" ++ String.fromInt (modBy 5 model.eye), src "../public/eye.PNG" ] []
+viewEyeImg : Int -> Html Msg
+viewEyeImg eye =
+    img [ class <| "eye" ++ String.fromInt (modBy 5 eye), src "../public/eye.PNG" ] []
 
 
-viewMouthImg : Model -> Html Msg
-viewMouthImg model =
-    img [ class "mouth", src <| "../public/mouth" ++ String.fromInt (modBy 3 model.mouth) ++ ".PNG" ] []
+viewMouthImg : Int -> Html Msg
+viewMouthImg mouth =
+    img [ class "mouth", src <| "../public/mouth" ++ String.fromInt (modBy 3 mouth) ++ ".PNG" ] []
 
 
-showImgButton : Model -> Html Msg
-showImgButton model =
-    if model.isCreatedImg then
+showImgButton : Bool -> Html Msg
+showImgButton isCreatedImg =
+    if isCreatedImg then
         button [ onClick Reset ] [ text "リセット" ]
 
     else
