@@ -156,11 +156,12 @@ view model =
                     [ onClick ChangeMouth ]
                     [ img [ class "change", src "../public/mouth-button.JPEG" ] [] ]
                 , a
-                    [ onClick Random ]
-                    [ img [ class "change", src "../public/random.JPEG" ] [] ]
-                , a
                     [ onClick Move ]
-                    [ img [ class "change", src "../public/move.JPEG" ] [] ]
+                    [ img [ class "change", src "../public/random.JPEG" ] [] ]
+
+                -- , a
+                --     [ onClick Move ]
+                --     [ img [ class "change", src "../public/move.JPEG" ] [] ]
                 , a
                     [ onClick Stop ]
                     [ text "とめる" ]
