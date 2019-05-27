@@ -32,7 +32,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { phrase = "", face = 1, color = 1, eye = 1, mouth = 1, isCreatedImg = False, poused = False }, Cmd.none )
+    ( { phrase = "", face = 1, color = 1, eye = 1, mouth = 1, isCreatedImg = False, poused = True }, Cmd.none )
 
 
 
