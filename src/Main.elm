@@ -26,13 +26,14 @@ type alias Model =
     , eye : Int
     , mouth : Int
     , isCreatedImg : Bool
-    , poused : Bool
+    , pousedRandom : Bool
+    , pousedMove : Bool
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { phrase = "", face = 1, color = 1, eye = 1, mouth = 1, isCreatedImg = False, poused = True }, Cmd.none )
+    ( { phrase = "", face = 1, color = 1, eye = 1, mouth = 1, isCreatedImg = False, pousedRandom = True, pousedMove = True }, Cmd.none )
 
 
 
@@ -53,8 +54,8 @@ type Msg
     | NewEye Int
     | NewMouth Int
     | Move
-    | MoveEveryOneSec Time.Posix
-    | Stop
+    | ToggleRandom
+    | RandomEveryOneSec Time.Posix
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -96,14 +97,14 @@ update msg model =
         NewMouth new ->
             ( { model | mouth = modBy 3 new }, Cmd.none )
 
-        Move ->
-            ( { model | poused = False }, Cmd.none )
+        ToggleRandom ->
+            ( { model | pousedRandom = not model.pousedRandom }, Cmd.none )
 
-        MoveEveryOneSec time ->
+        RandomEveryOneSec time ->
             ( model, Random.generate NewFace (Random.int 1 10) )
 
-        Stop ->
-            ( { model | poused = True }, Cmd.none )
+        Move ->
+            ( { model | phrase = "動くようになるよ", pousedMove = not model.pousedMove }, Cmd.none )
 
 
 
@@ -125,11 +126,11 @@ getFaceNum face =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    if model.poused then
+    if model.pousedRandom then
         Sub.none
 
     else
-        Time.every 100 MoveEveryOneSec
+        Time.every 100 RandomEveryOneSec
 
 
 
@@ -156,15 +157,11 @@ view model =
                     [ onClick ChangeMouth ]
                     [ img [ class "change", src "../public/mouth-button.JPEG" ] [] ]
                 , a
-                    [ onClick Move ]
+                    [ onClick ToggleRandom ]
                     [ img [ class "change", src "../public/random.JPEG" ] [] ]
-
-                -- , a
-                --     [ onClick Move ]
-                --     [ img [ class "change", src "../public/move.JPEG" ] [] ]
                 , a
-                    [ onClick Stop ]
-                    [ text "とめる" ]
+                    [ onClick Move ]
+                    [ img [ class "change", src "../public/move.JPEG" ] [] ]
                 ]
             , div
                 [ class "phrase-input" ]
