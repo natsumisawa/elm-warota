@@ -27,13 +27,13 @@ type alias Model =
     , mouth : Int
     , isCreatedImg : Bool
     , isPousedRandom : Bool
-    , isPousedMove : Bool
+    , isBuruburu : Bool
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model "" 1 1 1 1 False True True, Cmd.none )
+    ( Model "" 1 1 1 1 False True False, Cmd.none )
 
 
 
@@ -59,7 +59,7 @@ type Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg ({ face, color, eye, mouth, phrase, isPousedMove, isPousedRandom } as model) =
+update msg ({ face, color, eye, mouth, phrase, isPousedRandom, isBuruburu } as model) =
     case msg of
         Phrase input ->
             ( { model | phrase = input }, Cmd.none )
@@ -104,7 +104,7 @@ update msg ({ face, color, eye, mouth, phrase, isPousedMove, isPousedRandom } as
             ( model, Random.generate NewFace (Random.int 1 10) )
 
         Move ->
-            ( { model | phrase = "動くようになるよ", isPousedMove = not isPousedMove }, Cmd.none )
+            ( { model | isBuruburu = not isBuruburu }, Cmd.none )
 
 
 
@@ -138,7 +138,7 @@ subscriptions model =
 
 
 view : Model -> Html Msg
-view { phrase, face, color, eye, mouth, isCreatedImg } =
+view { phrase, face, color, eye, mouth, isCreatedImg, isBuruburu } =
     div []
         [ div [ class "header" ]
             [ h1 []
@@ -168,12 +168,7 @@ view { phrase, face, color, eye, mouth, isCreatedImg } =
                 [ input [ placeholder "くちぐせを入れてね", value phrase, onInput Phrase ] []
                 ]
             ]
-        , div [ class "generate" ]
-            [ viewFaceImg face color
-            , viewEyeImg eye
-            , viewMouthImg mouth
-            , h1 [] [ validatePhrase phrase ]
-            ]
+        , viewGenerate isBuruburu phrase face color eye mouth
         , div [] [ showImgButton isCreatedImg ]
         , div []
             [ img [ id "new-img" ] []
@@ -182,6 +177,25 @@ view { phrase, face, color, eye, mouth, isCreatedImg } =
         , div []
             [ canvas [ id "generate-canvas" ] [] ]
         ]
+
+
+viewGenerate : Bool -> String -> Int -> Int -> Int -> Int -> Html Msg
+viewGenerate isBuruburu phrase face color eye mouth =
+    if isBuruburu then
+        div [ class "generate", id "buruburu" ]
+            [ viewFaceImg face color
+            , viewEyeImg eye
+            , viewMouthImg mouth
+            , h1 [] [ validatePhrase phrase ]
+            ]
+
+    else
+        div [ class "generate" ]
+            [ viewFaceImg face color
+            , viewEyeImg eye
+            , viewMouthImg mouth
+            , h1 [] [ validatePhrase phrase ]
+            ]
 
 
 validatePhrase : String -> Html Msg
