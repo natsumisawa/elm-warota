@@ -20,20 +20,25 @@ port resetImg : String -> Cmd msg
 
 
 type alias Model =
-    { phrase : String
-    , face : Int
-    , color : Int
-    , eye : Int
-    , mouth : Int
+    { parts : Parts
+    , phrase : String
     , isCreatedImg : Bool
     , isPousedRandom : Bool
     , isBuruburu : Bool
     }
 
 
+type alias Parts =
+    { face : Int
+    , color : Int
+    , eye : Int
+    , mouth : Int
+    }
+
+
 init : ( Model, Cmd Msg )
 init =
-    ( Model "" 1 1 1 1 False True False, Cmd.none )
+    ( Model (Parts 1 1 1 1) "" False True False, Cmd.none )
 
 
 
@@ -48,33 +53,33 @@ type Msg
     | ChangeMouth
     | ToImg
     | Reset
-    | Random
-    | NewFace Int
-    | NewColor Int
-    | NewEye Int
-    | NewMouth Int
+    | PartsGenerator Parts
     | Move
     | ToggleRandom
     | RandomEveryOneSec Time.Posix
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg ({ face, color, eye, mouth, phrase, isPousedRandom, isBuruburu } as model) =
+update msg ({ parts, phrase, isPousedRandom, isBuruburu } as model) =
+    let
+        { face, color, eye, mouth } =
+            parts
+    in
     case msg of
         Phrase input ->
             ( { model | phrase = input }, Cmd.none )
 
         ChangeFace ->
-            ( { model | face = face + 1 }, Cmd.none )
+            ( { model | parts = Parts (face + 1) color eye mouth }, Cmd.none )
 
         ChangeColor ->
-            ( { model | color = color + 1 }, Cmd.none )
+            ( { model | parts = Parts face (color + 1) eye mouth }, Cmd.none )
 
         ChangeEye ->
-            ( { model | eye = eye + 1 }, Cmd.none )
+            ( { model | parts = Parts face color (eye + 1) mouth }, Cmd.none )
 
         ChangeMouth ->
-            ( { model | mouth = mouth + 1 }, Cmd.none )
+            ( { model | parts = Parts face color eye (mouth + 1) }, Cmd.none )
 
         ToImg ->
             ( { model | isCreatedImg = True }, toImg [ phrase, getFaceNum face, String.fromInt <| modBy 2 color, String.fromInt <| modBy 3 mouth ] )
@@ -82,33 +87,17 @@ update msg ({ face, color, eye, mouth, phrase, isPousedRandom, isBuruburu } as m
         Reset ->
             ( { model | isCreatedImg = False }, resetImg "リセット" )
 
-        Random ->
-            ( { model | isCreatedImg = False }, Random.generate NewFace (Random.int 1 10) )
-
-        NewFace new ->
-            ( { model | face = modBy 2 new }, Random.generate NewEye (Random.int 1 10) )
-
-        NewEye new ->
-            ( { model | eye = modBy 5 new }, Random.generate NewColor (Random.int 1 30) )
-
-        NewColor new ->
-            ( { model | color = modBy 2 new }, Random.generate NewMouth (Random.int 1 10) )
-
-        NewMouth new ->
-            ( { model | mouth = modBy 3 new }, Cmd.none )
-
         ToggleRandom ->
             ( { model | isPousedRandom = not isPousedRandom }, Cmd.none )
 
         RandomEveryOneSec time ->
-            ( model, Random.generate NewFace (Random.int 1 10) )
+            ( { model | isCreatedImg = False }, Random.generate PartsGenerator (Random.map4 Parts (Random.int 0 10) (Random.int 0 10) (Random.int 0 10) (Random.int 0 10)) )
+
+        PartsGenerator p ->
+            ( { model | parts = p }, Cmd.none )
 
         Move ->
             ( { model | isBuruburu = not isBuruburu }, Cmd.none )
-
-
-
--- TODO random map?か関数合成
 
 
 getFaceNum : Int -> String
@@ -138,7 +127,7 @@ subscriptions model =
 
 
 view : Model -> Html Msg
-view { phrase, face, color, eye, mouth, isCreatedImg, isBuruburu } =
+view { phrase, parts, isCreatedImg, isBuruburu } =
     div []
         [ div [ class "header" ]
             [ h1 []
@@ -168,7 +157,7 @@ view { phrase, face, color, eye, mouth, isCreatedImg, isBuruburu } =
                 [ input [ placeholder "くちぐせを入れてね", value phrase, onInput Phrase ] []
                 ]
             ]
-        , viewGenerate isBuruburu phrase face color eye mouth
+        , viewGenerate isBuruburu phrase parts
         , div [] [ showImgButton isCreatedImg ]
         , div []
             [ img [ id "new-img" ] []
@@ -179,8 +168,12 @@ view { phrase, face, color, eye, mouth, isCreatedImg, isBuruburu } =
         ]
 
 
-viewGenerate : Bool -> String -> Int -> Int -> Int -> Int -> Html Msg
-viewGenerate isBuruburu phrase face color eye mouth =
+viewGenerate : Bool -> String -> Parts -> Html Msg
+viewGenerate isBuruburu phrase parts =
+    let
+        { face, color, eye, mouth } =
+            parts
+    in
     if isBuruburu then
         div [ class "generate", id "buruburu" ]
             [ viewFaceImg face color
