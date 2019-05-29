@@ -94,10 +94,10 @@ update msg ({ parts, phrase, isPousedRandom, isBuruburu } as model) =
         ToImg ->
             case face of
                 Warota ->
-                    ( { model | isCreatedImg = True }, toImg [ phrase, "warota", String.fromInt <| modBy 2 color, String.fromInt <| modBy 3 mouth ] )
+                    ( { model | isCreatedImg = True }, toImg [ phrase, "warota", String.fromInt color, String.fromInt mouth ] )
 
                 Ane ->
-                    ( { model | isCreatedImg = True }, toImg [ phrase, "a-ne", String.fromInt <| modBy 2 color, String.fromInt <| modBy 3 mouth ] )
+                    ( { model | isCreatedImg = True }, toImg [ phrase, "a-ne", String.fromInt color, String.fromInt mouth ] )
 
         Reset ->
             ( { model | isCreatedImg = False }, resetImg "リセット" )
@@ -106,7 +106,7 @@ update msg ({ parts, phrase, isPousedRandom, isBuruburu } as model) =
             ( { model | isPousedRandom = not isPousedRandom }, Cmd.none )
 
         RandomEveryOneSec time ->
-            ( { model | isCreatedImg = False }, Random.generate PartsGenerator (Random.map4 Parts (Random.uniform Warota [ Ane ]) (Random.int 0 10) (Random.int 0 10) (Random.int 0 10)) )
+            ( { model | isCreatedImg = False }, Random.generate PartsGenerator (Random.map4 Parts (Random.uniform Warota [ Ane ]) (Random.int 0 1) (Random.int 0 4) (Random.int 0 2)) )
 
         PartsGenerator p ->
             ( { model | parts = p }, Cmd.none )
@@ -210,20 +210,20 @@ viewFaceImg : Face -> Int -> Html Msg
 viewFaceImg face color =
     case face of
         Warota ->
-            img [ class "face", src <| "../public/warota" ++ String.fromInt (modBy 2 color) ++ ".PNG" ] []
+            img [ class "face", src <| "../public/warota" ++ String.fromInt color ++ ".PNG" ] []
 
         Ane ->
-            img [ class "face", src <| "../public/a-ne" ++ String.fromInt (modBy 2 color) ++ ".PNG" ] []
+            img [ class "face", src <| "../public/a-ne" ++ String.fromInt color ++ ".PNG" ] []
 
 
 viewEyeImg : Int -> Html Msg
 viewEyeImg eye =
-    img [ class <| "eye" ++ String.fromInt (modBy 5 eye), src "../public/eye.PNG" ] []
+    img [ class <| "eye" ++ String.fromInt eye, src "../public/eye.PNG" ] []
 
 
 viewMouthImg : Int -> Html Msg
 viewMouthImg mouth =
-    img [ class "mouth", src <| "../public/mouth" ++ String.fromInt (modBy 3 mouth) ++ ".PNG" ] []
+    img [ class "mouth", src <| "../public/mouth" ++ String.fromInt mouth ++ ".PNG" ] []
 
 
 showImgButton : Bool -> Html Msg
