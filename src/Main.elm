@@ -29,16 +29,21 @@ type alias Model =
 
 
 type alias Parts =
-    { face : Int
+    { face : Face
     , color : Int
     , eye : Int
     , mouth : Int
     }
 
 
+type Face
+    = Warota
+    | Ane
+
+
 init : ( Model, Cmd Msg )
 init =
-    ( Model (Parts 1 1 1 1) "" False True False, Cmd.none )
+    ( Model (Parts Warota 1 1 1) "" False True False, Cmd.none )
 
 
 
@@ -70,7 +75,12 @@ update msg ({ parts, phrase, isPousedRandom, isBuruburu } as model) =
             ( { model | phrase = input }, Cmd.none )
 
         ChangeFace ->
-            ( { model | parts = Parts (face + 1) color eye mouth }, Cmd.none )
+            case face of
+                Warota ->
+                    ( { model | parts = Parts Ane color eye mouth }, Cmd.none )
+
+                Ane ->
+                    ( { model | parts = Parts Warota color eye mouth }, Cmd.none )
 
         ChangeColor ->
             ( { model | parts = Parts face (color + 1) eye mouth }, Cmd.none )
@@ -82,7 +92,12 @@ update msg ({ parts, phrase, isPousedRandom, isBuruburu } as model) =
             ( { model | parts = Parts face color eye (mouth + 1) }, Cmd.none )
 
         ToImg ->
-            ( { model | isCreatedImg = True }, toImg [ phrase, getFaceNum face, String.fromInt <| modBy 2 color, String.fromInt <| modBy 3 mouth ] )
+            case face of
+                Warota ->
+                    ( { model | isCreatedImg = True }, toImg [ phrase, "warota", String.fromInt <| modBy 2 color, String.fromInt <| modBy 3 mouth ] )
+
+                Ane ->
+                    ( { model | isCreatedImg = True }, toImg [ phrase, "a-ne", String.fromInt <| modBy 2 color, String.fromInt <| modBy 3 mouth ] )
 
         Reset ->
             ( { model | isCreatedImg = False }, resetImg "リセット" )
@@ -91,22 +106,13 @@ update msg ({ parts, phrase, isPousedRandom, isBuruburu } as model) =
             ( { model | isPousedRandom = not isPousedRandom }, Cmd.none )
 
         RandomEveryOneSec time ->
-            ( { model | isCreatedImg = False }, Random.generate PartsGenerator (Random.map4 Parts (Random.int 0 10) (Random.int 0 10) (Random.int 0 10) (Random.int 0 10)) )
+            ( { model | isCreatedImg = False }, Random.generate PartsGenerator (Random.map4 Parts (Random.uniform Warota [ Ane ]) (Random.int 0 10) (Random.int 0 10) (Random.int 0 10)) )
 
         PartsGenerator p ->
             ( { model | parts = p }, Cmd.none )
 
         Move ->
             ( { model | isBuruburu = not isBuruburu }, Cmd.none )
-
-
-getFaceNum : Int -> String
-getFaceNum face =
-    if modBy 2 face == 0 then
-        "warota"
-
-    else
-        "a-ne"
 
 
 
@@ -200,13 +206,14 @@ validatePhrase phrase =
         text phrase
 
 
-viewFaceImg : Int -> Int -> Html Msg
+viewFaceImg : Face -> Int -> Html Msg
 viewFaceImg face color =
-    if modBy 2 face == 0 then
-        img [ class "face", src <| "../public/warota" ++ String.fromInt (modBy 2 color) ++ ".PNG" ] []
+    case face of
+        Warota ->
+            img [ class "face", src <| "../public/warota" ++ String.fromInt (modBy 2 color) ++ ".PNG" ] []
 
-    else
-        img [ class "face", src <| "../public/a-ne" ++ String.fromInt (modBy 2 color) ++ ".PNG" ] []
+        Ane ->
+            img [ class "face", src <| "../public/a-ne" ++ String.fromInt (modBy 2 color) ++ ".PNG" ] []
 
 
 viewEyeImg : Int -> Html Msg
