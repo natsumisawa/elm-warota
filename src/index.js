@@ -16,9 +16,15 @@ app.ports.toImg.subscribe(function(data) {
   var faceImg = new Image();
   var eyeImg = new Image();
   var mouthImg = new Image();
-  faceImg.src = "../public/" + data[1] + data[2] + ".PNG";
-  eyeImg.src = "../public/eye.PNG";
-  mouthImg.src = "../public/mouth" + data[3] + ".PNG";
+  faceImg.addEventListener("load", function() {
+    faceImg.src = "../public/" + data[1] + data[2] + ".PNG";
+  }, false);
+  eyeImg.addEventListener("load", function() {
+    eyeImg.src = "../public/eye.PNG";
+  }, false);
+  mouthImg.addEventListener("load", function() {
+    mouthImg.src = "../public/mouth" + data[3] + ".PNG";
+  }, false);
   ctx.drawImage(faceImg, 0, 0);
   ctx.drawImage(eyeImg, 120, 10);
   ctx.drawImage(mouthImg, 120, 80);
