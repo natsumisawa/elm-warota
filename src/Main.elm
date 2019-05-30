@@ -232,7 +232,7 @@ showImgButton isCreatedImg =
         button [ onClick Reset ] [ text "リセット" ]
 
     else
-        button [ onClick ToImg ] [ text "画像に変換" ]
+        button [ onClick ToImg ] [ text "画像に変換(1秒後に表示されます)" ]
 
 
 

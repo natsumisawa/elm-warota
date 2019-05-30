@@ -17,27 +17,23 @@ app.ports.toImg.subscribe(function(data) {
   var eyeImg = new Image();
   var mouthImg = new Image();
   faceImg.src = "../public/" + data[1] + data[2] + ".PNG";
+  eyeImg.src = "../public/eye.PNG";
+  mouthImg.src = "../public/mouth" + data[3] + ".PNG";
   faceImg.addEventListener("load", function() {
     ctx.drawImage(faceImg, 0, 0);
     eyeImg.addEventListener("load", function() {
       ctx.drawImage(eyeImg, 120, 10);
       mouthImg.addEventListener("load", function() {
         ctx.drawImage(mouthImg, 120, 80);
+        wait1s();
       }, false);
     }, false);
   }, false);
-  // faceImg.src = "../public/" + data[1] + data[2] + ".PNG";
-  eyeImg.src = "../public/eye.PNG";
-  mouthImg.src = "../public/mouth" + data[3] + ".PNG";
-  // ctx.drawImage(faceImg, 0, 0);
-  ctx.drawImage(eyeImg, 120, 10);
-  ctx.drawImage(mouthImg, 120, 80);
-  ctx.font = "32px Source Sans Pro";
+  ctx.font = "bold 32px Source Sans Pro";
   ctx.fillText(data[0], 120, 380);
-  wait1min();
-  async function wait1min() {
+  async function wait1s() {
     try {
-      await wait(2);
+      await wait(1);
       var png = canvas.toDataURL();
       document.getElementById("new-img").src = png;
       document.getElementById("download").href = png;
