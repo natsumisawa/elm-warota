@@ -33,7 +33,7 @@ app.ports.toImg.subscribe(function(data) {
   ctx.fillText(data[0], 120, 380);
   async function wait1s() {
     try {
-      await wait(1);
+      await wait(2);
       var png = canvas.toDataURL();
       document.getElementById("new-img").src = png;
       document.getElementById("download").href = png;
