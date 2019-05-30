@@ -170,7 +170,7 @@ view { phrase, parts, isCreatedImg, isBuruburu } =
             , a [ id "download", download "output.PNG" ] [ text "画像をダウンロード" ]
             ]
         , div []
-            [ canvas [ id "generate-canvas" ] [] ]
+            [ canvas [ id "generate-canvas", width 350, height 400 ] [] ]
         ]
 
 

@@ -13,16 +13,17 @@ app.ports.toImg.subscribe(function(data) {
   if ( ! canvas || ! canvas.getContext ) { return false; }
   var ctx = canvas.getContext('2d');
   /* Imageオブジェクトを生成 */
-  var img1 = new Image();
-  var img2 = new Image();
-  var img3 = new Image();
-  img1.src = "../public/" + data[1] + data[2] + ".PNG";
-  img2.src = "../public/eye.PNG";
-  img3.src = "../public/mouth" + data[3] + ".PNG";
-  ctx.drawImage(img1, 0, 0);
-  ctx.drawImage(img2, 0, 10);
-  ctx.drawImage(img3, 0, 20);
-  ctx.fillText(data[0], 0, 0);
+  var faceImg = new Image();
+  var eyeImg = new Image();
+  var mouthImg = new Image();
+  faceImg.src = "../public/" + data[1] + data[2] + ".PNG";
+  eyeImg.src = "../public/eye.PNG";
+  mouthImg.src = "../public/mouth" + data[3] + ".PNG";
+  ctx.drawImage(faceImg, 0, 0);
+  ctx.drawImage(eyeImg, 120, 10);
+  ctx.drawImage(mouthImg, 120, 80);
+  ctx.font = "32px Source Sans Pro";
+  ctx.fillText(data[0], 120, 380);
 
   var png = canvas.toDataURL();
   document.getElementById("new-img").src = png;
