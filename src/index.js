@@ -19,12 +19,12 @@ app.ports.toImg.subscribe(function(data) {
   faceImg.src = "../public/" + data[1] + data[2] + ".PNG";
   faceImg.addEventListener("load", function() {
     ctx.drawImage(faceImg, 0, 0);
-  }, false);
-  eyeImg.addEventListener("load", function() {
-    ctx.drawImage(eyeImg, 120, 10);
-  }, false);
-  mouthImg.addEventListener("load", function() {
-    ctx.drawImage(mouthImg, 120, 80);
+    eyeImg.addEventListener("load", function() {
+      ctx.drawImage(eyeImg, 120, 10);
+      mouthImg.addEventListener("load", function() {
+        ctx.drawImage(mouthImg, 120, 80);
+      }, false);
+    }, false);
   }, false);
   // faceImg.src = "../public/" + data[1] + data[2] + ".PNG";
   eyeImg.src = "../public/eye.PNG";
