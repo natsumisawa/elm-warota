@@ -16,24 +16,35 @@ app.ports.toImg.subscribe(function(data) {
   var faceImg = new Image();
   var eyeImg = new Image();
   var mouthImg = new Image();
+  faceImg.src = "../public/" + data[1] + data[2] + ".PNG";
   faceImg.addEventListener("load", function() {
-    faceImg.src = "../public/" + data[1] + data[2] + ".PNG";
+    ctx.drawImage(faceImg, 0, 0);
   }, false);
   eyeImg.addEventListener("load", function() {
-    eyeImg.src = "../public/eye.PNG";
+    ctx.drawImage(eyeImg, 120, 10);
   }, false);
   mouthImg.addEventListener("load", function() {
-    mouthImg.src = "../public/mouth" + data[3] + ".PNG";
+    ctx.drawImage(mouthImg, 120, 80);
   }, false);
-  ctx.drawImage(faceImg, 0, 0);
+  // faceImg.src = "../public/" + data[1] + data[2] + ".PNG";
+  eyeImg.src = "../public/eye.PNG";
+  mouthImg.src = "../public/mouth" + data[3] + ".PNG";
+  // ctx.drawImage(faceImg, 0, 0);
   ctx.drawImage(eyeImg, 120, 10);
   ctx.drawImage(mouthImg, 120, 80);
   ctx.font = "32px Source Sans Pro";
   ctx.fillText(data[0], 120, 380);
-
-  var png = canvas.toDataURL();
-  document.getElementById("new-img").src = png;
-  document.getElementById("download").href = png;
+  wait1min();
+  async function wait1min() {
+    try {
+      await wait(2);
+      var png = canvas.toDataURL();
+      document.getElementById("new-img").src = png;
+      document.getElementById("download").href = png;
+    } catch (err) {
+      console.error(err);
+    }
+  }
 })
 
 app.ports.resetImg.subscribe(function(data) {
@@ -42,3 +53,10 @@ app.ports.resetImg.subscribe(function(data) {
   var ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 });
+
+const wait = (sec) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, sec*1000);
+    //setTimeout(() => {reject(new Error("エラー！"))}, sec*1000);
+  });
+};
