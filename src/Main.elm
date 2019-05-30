@@ -210,20 +210,20 @@ viewFaceImg : Face -> Int -> Html Msg
 viewFaceImg face color =
     case face of
         Warota ->
-            img [ class "face", src <| "../public/warota" ++ String.fromInt color ++ ".PNG" ] []
+            img [ class "face", src <| "../public/warota" ++ String.fromInt (modBy 2 color) ++ ".PNG" ] []
 
         Ane ->
-            img [ class "face", src <| "../public/a-ne" ++ String.fromInt color ++ ".PNG" ] []
+            img [ class "face", src <| "../public/a-ne" ++ String.fromInt (modBy 2 color) ++ ".PNG" ] []
 
 
 viewEyeImg : Int -> Html Msg
 viewEyeImg eye =
-    img [ class <| "eye" ++ String.fromInt eye, src "../public/eye.PNG" ] []
+    img [ class <| "eye" ++ String.fromInt (modBy 5 eye), src "../public/eye.PNG" ] []
 
 
 viewMouthImg : Int -> Html Msg
 viewMouthImg mouth =
-    img [ class "mouth", src <| "../public/mouth" ++ String.fromInt mouth ++ ".PNG" ] []
+    img [ class "mouth", src <| "../public/mouth" ++ String.fromInt (modBy 3 mouth) ++ ".PNG" ] []
 
 
 showImgButton : Bool -> Html Msg

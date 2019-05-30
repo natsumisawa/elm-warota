@@ -25,13 +25,13 @@ app.ports.toImg.subscribe(function(data) {
       ctx.drawImage(eyeImg, 120, 10);
       mouthImg.addEventListener("load", function() {
         ctx.drawImage(mouthImg, 120, 80);
-        wait1s();
       }, false);
     }, false);
   }, false);
   ctx.font = "bold 32px Source Sans Pro";
   ctx.fillText(data[0], 120, 380);
-  async function wait1s() {
+  wait2s();
+  async function wait2s() {
     try {
       await wait(2);
       var png = canvas.toDataURL();
