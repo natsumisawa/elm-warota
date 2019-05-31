@@ -16,18 +16,19 @@ app.ports.toImg.subscribe(function(data) {
   var faceImg = new Image();
   var eyeImg = new Image();
   var mouthImg = new Image();
+  faceImg.addEventListener("load", function() {
+    ctx.drawImage(faceImg, 0, 0);
+  }, false);
+  eyeImg.addEventListener("load", function() {
+    ctx.drawImage(eyeImg, 120, 10);
+  }, false);
+  mouthImg.addEventListener("load", function() {
+    ctx.drawImage(mouthImg, 120, 80);
+  }, false);
   faceImg.src = "../public/" + data[1] + data[2] + ".PNG";
   eyeImg.src = "../public/eye.PNG";
   mouthImg.src = "../public/mouth" + data[3] + ".PNG";
-  faceImg.addEventListener("load", function() {
-    ctx.drawImage(faceImg, 0, 0);
-    eyeImg.addEventListener("load", function() {
-      ctx.drawImage(eyeImg, 120, 10);
-      mouthImg.addEventListener("load", function() {
-        ctx.drawImage(mouthImg, 120, 80);
-      }, false);
-    }, false);
-  }, false);
+  
   ctx.font = "bold 32px Source Sans Pro";
   ctx.fillText(data[0], 120, 380);
   wait2s();
