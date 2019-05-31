@@ -43,7 +43,7 @@ type Face
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model (Parts Warota 1 1 1) "" False True False, Cmd.none )
+    ( Model (Parts Warota 0 0 0) "" False True False, Cmd.none )
 
 
 
@@ -94,10 +94,10 @@ update msg ({ parts, phrase, isPousedRandom, isBuruburu } as model) =
         ToImg ->
             case face of
                 Warota ->
-                    ( { model | isCreatedImg = True }, toImg [ phrase, "warota", String.fromInt color, String.fromInt mouth ] )
+                    ( { model | isCreatedImg = True }, toImg [ phrase, "warota", String.fromInt (modBy 2 color), String.fromInt (modBy 3 mouth) ] )
 
                 Ane ->
-                    ( { model | isCreatedImg = True }, toImg [ phrase, "a-ne", String.fromInt color, String.fromInt mouth ] )
+                    ( { model | isCreatedImg = True }, toImg [ phrase, "a-ne", String.fromInt (modBy 2 color), String.fromInt (modBy 3 mouth) ] )
 
         Reset ->
             ( { model | isCreatedImg = False }, resetImg "リセット" )
