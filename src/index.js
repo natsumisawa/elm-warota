@@ -7,8 +7,7 @@ var app = Elm.Main.init({
   node: document.getElementById('main')
 });
 
-app.ports.drawImage.subscribe(function(data) {
-  console.log(JSON.stringify(data));
+app.ports.drawImage.subscribe(function(json) {
   var canvas = document.getElementById('generate-canvas');
   if ( ! canvas || ! canvas.getContext ) { return false; }
   var ctx = canvas.getContext('2d');
@@ -25,12 +24,12 @@ app.ports.drawImage.subscribe(function(data) {
   mouthImg.addEventListener("load", function() {
     ctx.drawImage(mouthImg, 120, 80);
   }, false);
-  faceImg.src = "../public/" + data[1] + data[2] + ".PNG";
+  faceImg.src = "../public/" + json.face + json.color + ".PNG";
   eyeImg.src = "../public/eye.PNG";
-  mouthImg.src = "../public/mouth" + data[3] + ".PNG";
+  mouthImg.src = "../public/mouth" + json.mouth + ".PNG";
 
   ctx.font = "bold 32px Source Sans Pro";
-  ctx.fillText(data[0], 120, 380);
+  ctx.fillText(json.phrase, 120, 380);
   wait2s();
   async function wait2s() {
     try {

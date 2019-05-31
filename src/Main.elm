@@ -4,12 +4,13 @@ import Browser
 import Html exposing (Attribute, Html, a, button, canvas, div, h1, h3, img, input, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
+import Json.Encode as JE
 import Random
 import Task
 import Time
 
 
-port drawImage : List String -> Cmd msg
+port drawImage : JE.Value -> Cmd msg
 
 
 port resetImg : String -> Cmd msg
@@ -96,16 +97,7 @@ update msg ({ parts, phrase, isPousedRandom, isBuruburu } as model) =
             ( { model | parts = Parts face color eye (mouth + 1) }, Cmd.none )
 
         SendImgToCanvas ->
-            let
-                faceFileName =
-                    case face of
-                        Warota ->
-                            "warota"
-
-                        Ane ->
-                            "a-ne"
-            in
-            ( { model | isCreatedImg = True }, drawImage [ phrase, faceFileName, String.fromInt (modBy 2 color), String.fromInt (modBy 3 mouth) ] )
+            ( { model | isCreatedImg = True }, drawImage <| postPartsData phrase parts )
 
         ResetImg ->
             ( { model | isCreatedImg = False }, resetImg "リセット" )
@@ -121,6 +113,29 @@ update msg ({ parts, phrase, isPousedRandom, isBuruburu } as model) =
 
         MoveParts ->
             ( { model | isBuruburu = not isBuruburu }, Cmd.none )
+
+
+postPartsData : String -> Parts -> JE.Value
+postPartsData phrase parts =
+    let
+        { face, color, eye, mouth } =
+            parts
+
+        faceFileName =
+            case face of
+                Warota ->
+                    "warota"
+
+                Ane ->
+                    "a-ne"
+    in
+    JE.object
+        [ ( "phrase", JE.string phrase )
+        , ( "face", JE.string faceFileName )
+        , ( "color", JE.int color )
+        , ( "eye", JE.int eye )
+        , ( "mouth", JE.int mouth )
+        ]
 
 
 
