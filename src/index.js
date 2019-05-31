@@ -8,6 +8,7 @@ var app = Elm.Main.init({
 });
 
 app.ports.drawImage.subscribe(function(json) {
+  console.log(json);
   var canvas = document.getElementById('generate-canvas');
   if ( ! canvas || ! canvas.getContext ) { return false; }
   var ctx = canvas.getContext('2d');
@@ -25,7 +26,7 @@ app.ports.drawImage.subscribe(function(json) {
     ctx.drawImage(mouthImg, 120, 80);
   }, false);
   faceImg.src = "../public/" + json.face + json.color + ".PNG";
-  eyeImg.src = "../public/eye.PNG";
+  eyeImg.src = "../public/eye" + json.eye + ".PNG";
   mouthImg.src = "../public/mouth" + json.mouth + ".PNG";
 
   ctx.font = "bold 32px Source Sans Pro";

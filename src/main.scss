@@ -50,40 +50,16 @@ div.generate {
   display: inline-block;
 }
 
-img.eye0 {
+img.eye {
   position: absolute;
-  left: 35%;
-  top: 10%;
-}
-
-img.eye1 {
-  position: absolute;
-  left: 35%;
-}
-
-img.eye2 {
-  position: absolute;
-  left: 37%;
-  top: 10%;
-}
-
-img.eye3 {
-  position: absolute;
-  left: 37%;
-  top: 5%;
-}
-
-img.eye4 {
-  position: absolute;
-  left: 40%;
+  left: 15%;
   top: 5%;
 }
 
 img.mouth {
   position: absolute;
-  left: 40%;
-  right: 70%;
-  top: 20%;
+  left: 30%;
+  top: 25%;
 }
 
 #generate-canvas {

@@ -1,4 +1,4 @@
-port module Main exposing (Model, Msg(..), init, main, update, validatePhrase, view, viewEyeImg, viewFaceImg, viewMouthImg)
+port module Main exposing (Face(..), Model, Msg(..), Parts, init, main, partsEncoder, update, validatePhrase, view, viewEyeImg, viewFaceImg, viewMouthImg)
 
 import Browser
 import Html exposing (Attribute, Html, a, button, canvas, div, h1, h3, img, input, text)
@@ -97,7 +97,7 @@ update msg ({ parts, phrase, isPousedRandom, isBuruburu } as model) =
             ( { model | parts = Parts face color eye (mouth + 1) }, Cmd.none )
 
         SendImgToCanvas ->
-            ( { model | isCreatedImg = True }, drawImage <| postPartsData phrase parts )
+            ( { model | isCreatedImg = True }, drawImage <| partsEncoder phrase parts )
 
         ResetImg ->
             ( { model | isCreatedImg = False }, resetImg "リセット" )
@@ -106,7 +106,7 @@ update msg ({ parts, phrase, isPousedRandom, isBuruburu } as model) =
             ( { model | isPousedRandom = not isPousedRandom }, Cmd.none )
 
         GeneratePartsRandomly _ ->
-            ( { model | isCreatedImg = False }, Random.generate GeneratedParts (Random.map4 Parts (Random.uniform Warota [ Ane ]) (Random.int 0 1) (Random.int 0 4) (Random.int 0 2)) )
+            ( { model | isCreatedImg = False }, Random.generate GeneratedParts (Random.map4 Parts (Random.uniform Warota [ Ane ]) (Random.int 0 1) (Random.int 0 5) (Random.int 0 2)) )
 
         GeneratedParts p ->
             ( { model | parts = p }, Cmd.none )
@@ -115,8 +115,8 @@ update msg ({ parts, phrase, isPousedRandom, isBuruburu } as model) =
             ( { model | isBuruburu = not isBuruburu }, Cmd.none )
 
 
-postPartsData : String -> Parts -> JE.Value
-postPartsData phrase parts =
+partsEncoder : String -> Parts -> JE.Value
+partsEncoder phrase parts =
     let
         { face, color, eye, mouth } =
             parts
@@ -132,9 +132,9 @@ postPartsData phrase parts =
     JE.object
         [ ( "phrase", JE.string phrase )
         , ( "face", JE.string faceFileName )
-        , ( "color", JE.int color )
-        , ( "eye", JE.int eye )
-        , ( "mouth", JE.int mouth )
+        , ( "color", JE.int <| modBy 2 color )
+        , ( "eye", JE.int <| modBy 5 eye )
+        , ( "mouth", JE.int <| modBy 3 mouth )
         ]
 
 
@@ -241,7 +241,7 @@ viewFaceImg face color =
 
 viewEyeImg : Int -> Html Msg
 viewEyeImg eye =
-    img [ class <| "eye" ++ String.fromInt (modBy 5 eye), src "../public/eye.PNG" ] []
+    img [ class "eye", src <| "../public/eye" ++ String.fromInt (modBy 5 eye) ++ ".PNG" ] []
 
 
 viewMouthImg : Int -> Html Msg
