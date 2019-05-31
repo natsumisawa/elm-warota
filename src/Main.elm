@@ -58,10 +58,10 @@ type Msg
     | ChangeMouth
     | ToImg
     | Reset
-    | PartsGenerator Parts
+    | GeneratedParts Parts
     | Move
     | ToggleRandom
-    | RandomEveryOneSec Time.Posix
+    | GenerateWarotaRandomly Time.Posix
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -69,18 +69,21 @@ update msg ({ parts, phrase, isPousedRandom, isBuruburu } as model) =
     let
         { face, color, eye, mouth } =
             parts
+
+        newFace =
+            case face of
+                Warota ->
+                    Ane
+
+                Ane ->
+                    Warota
     in
     case msg of
         Phrase input ->
             ( { model | phrase = input }, Cmd.none )
 
         ChangeFace ->
-            case face of
-                Warota ->
-                    ( { model | parts = Parts Ane color eye mouth }, Cmd.none )
-
-                Ane ->
-                    ( { model | parts = Parts Warota color eye mouth }, Cmd.none )
+            ( { model | parts = Parts newFace color eye mouth }, Cmd.none )
 
         ChangeColor ->
             ( { model | parts = Parts face (color + 1) eye mouth }, Cmd.none )
@@ -105,10 +108,10 @@ update msg ({ parts, phrase, isPousedRandom, isBuruburu } as model) =
         ToggleRandom ->
             ( { model | isPousedRandom = not isPousedRandom }, Cmd.none )
 
-        RandomEveryOneSec time ->
-            ( { model | isCreatedImg = False }, Random.generate PartsGenerator (Random.map4 Parts (Random.uniform Warota [ Ane ]) (Random.int 0 1) (Random.int 0 4) (Random.int 0 2)) )
+        GenerateWarotaRandomly _ ->
+            ( { model | isCreatedImg = False }, Random.generate GeneratedParts (Random.map4 Parts (Random.uniform Warota [ Ane ]) (Random.int 0 1) (Random.int 0 4) (Random.int 0 2)) )
 
-        PartsGenerator p ->
+        GeneratedParts p ->
             ( { model | parts = p }, Cmd.none )
 
         Move ->
@@ -125,7 +128,7 @@ subscriptions model =
         Sub.none
 
     else
-        Time.every 100 RandomEveryOneSec
+        Time.every 100 GenerateWarotaRandomly
 
 
 
