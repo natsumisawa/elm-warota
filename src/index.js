@@ -20,23 +20,26 @@ app.ports.drawImage.subscribe(function(json) {
     ctx.drawImage(faceImg, 0, 0);
   }, false);
   eyeImg.addEventListener("load", function() {
-    ctx.drawImage(eyeImg, 120, 10);
+    ctx.drawImage(eyeImg, 100, 20);
   }, false);
   mouthImg.addEventListener("load", function() {
-    ctx.drawImage(mouthImg, 120, 80);
+    ctx.drawImage(mouthImg, 120, 90);
   }, false);
-  faceImg.src = "../public/" + json.face + json.color + ".PNG";
+  faceImg.src = "../public/" + json.face + ".PNG";
   eyeImg.src = "../public/eye" + json.eye + ".PNG";
   mouthImg.src = "../public/mouth" + json.mouth + ".PNG";
 
   ctx.font = "bold 32px Source Sans Pro";
   ctx.fillText(json.phrase, 120, 380);
   wait2s();
+  var rgbString = json.color.red + "," + json.color.green + "," + json.color.blue
+   // + "," json.color.green + "," json.color.blue
   async function wait2s() {
     try {
       await wait(2);
       var png = canvas.toDataURL();
       document.getElementById("new-img").src = png;
+      document.getElementById("new-img").style = "background:rgba(" + rgbString + ")";
       document.getElementById("download").href = png;
     } catch (err) {
       console.error(err);
