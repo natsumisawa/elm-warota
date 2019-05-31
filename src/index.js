@@ -28,7 +28,7 @@ app.ports.toImg.subscribe(function(data) {
   faceImg.src = "../public/" + data[1] + data[2] + ".PNG";
   eyeImg.src = "../public/eye.PNG";
   mouthImg.src = "../public/mouth" + data[3] + ".PNG";
-  
+
   ctx.font = "bold 32px Source Sans Pro";
   ctx.fillText(data[0], 120, 380);
   wait2s();
@@ -49,11 +49,12 @@ app.ports.resetImg.subscribe(function(data) {
   if ( ! canvas || ! canvas.getContext ) { return false; }
   var ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  document.getElementById("new-img").src = "";
+  document.getElementById("download").href = "";
 });
 
 const wait = (sec) => {
   return new Promise((resolve, reject) => {
     setTimeout(resolve, sec*1000);
-    //setTimeout(() => {reject(new Error("エラー！"))}, sec*1000);
   });
 };
