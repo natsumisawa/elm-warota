@@ -7,7 +7,7 @@ var app = Elm.Main.init({
   node: document.getElementById('main')
 });
 
-app.ports.toImg.subscribe(function(data) {
+app.ports.drawImage.subscribe(function(data) {
   console.log(JSON.stringify(data));
   var canvas = document.getElementById('generate-canvas');
   if ( ! canvas || ! canvas.getContext ) { return false; }
