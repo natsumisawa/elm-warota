@@ -9,7 +9,7 @@ import Task
 import Time
 
 
-port toImg : List String -> Cmd msg
+port drawImage : List String -> Cmd msg
 
 
 port resetImg : String -> Cmd msg
@@ -51,17 +51,17 @@ init =
 
 
 type Msg
-    = Phrase String
+    = ChangePhrase String
     | ChangeFace
     | ChangeColor
     | ChangeEye
     | ChangeMouth
-    | ToImg
-    | Reset
+    | SendImgToCanvas
+    | ResetImg
+    | MoveParts
+    | ToggleGeneratePartsRandomly
+    | GeneratePartsRandomly Time.Posix
     | GeneratedParts Parts
-    | Move
-    | ToggleRandom
-    | GenerateWarotaRandomly Time.Posix
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -69,20 +69,21 @@ update msg ({ parts, phrase, isPousedRandom, isBuruburu } as model) =
     let
         { face, color, eye, mouth } =
             parts
-
-        newFace =
-            case face of
-                Warota ->
-                    Ane
-
-                Ane ->
-                    Warota
     in
     case msg of
-        Phrase input ->
+        ChangePhrase input ->
             ( { model | phrase = input }, Cmd.none )
 
         ChangeFace ->
+            let
+                newFace =
+                    case face of
+                        Warota ->
+                            Ane
+
+                        Ane ->
+                            Warota
+            in
             ( { model | parts = Parts newFace color eye mouth }, Cmd.none )
 
         ChangeColor ->
@@ -94,27 +95,31 @@ update msg ({ parts, phrase, isPousedRandom, isBuruburu } as model) =
         ChangeMouth ->
             ( { model | parts = Parts face color eye (mouth + 1) }, Cmd.none )
 
-        ToImg ->
-            case face of
-                Warota ->
-                    ( { model | isCreatedImg = True }, toImg [ phrase, "warota", String.fromInt (modBy 2 color), String.fromInt (modBy 3 mouth) ] )
+        SendImgToCanvas ->
+            let
+                faceFileName =
+                    case face of
+                        Warota ->
+                            "warota"
 
-                Ane ->
-                    ( { model | isCreatedImg = True }, toImg [ phrase, "a-ne", String.fromInt (modBy 2 color), String.fromInt (modBy 3 mouth) ] )
+                        Ane ->
+                            "a-ne"
+            in
+            ( { model | isCreatedImg = True }, drawImage [ phrase, faceFileName, String.fromInt (modBy 2 color), String.fromInt (modBy 3 mouth) ] )
 
-        Reset ->
+        ResetImg ->
             ( { model | isCreatedImg = False }, resetImg "リセット" )
 
-        ToggleRandom ->
+        ToggleGeneratePartsRandomly ->
             ( { model | isPousedRandom = not isPousedRandom }, Cmd.none )
 
-        GenerateWarotaRandomly _ ->
+        GeneratePartsRandomly _ ->
             ( { model | isCreatedImg = False }, Random.generate GeneratedParts (Random.map4 Parts (Random.uniform Warota [ Ane ]) (Random.int 0 1) (Random.int 0 4) (Random.int 0 2)) )
 
         GeneratedParts p ->
             ( { model | parts = p }, Cmd.none )
 
-        Move ->
+        MoveParts ->
             ( { model | isBuruburu = not isBuruburu }, Cmd.none )
 
 
@@ -128,7 +133,7 @@ subscriptions model =
         Sub.none
 
     else
-        Time.every 100 GenerateWarotaRandomly
+        Time.every 100 GeneratePartsRandomly
 
 
 
@@ -155,15 +160,15 @@ view { phrase, parts, isCreatedImg, isBuruburu } =
                     [ onClick ChangeMouth ]
                     [ img [ class "change", src "../public/mouth-button.JPEG" ] [] ]
                 , a
-                    [ onClick ToggleRandom ]
+                    [ onClick ToggleGeneratePartsRandomly ]
                     [ img [ class "change", src "../public/random.JPEG" ] [] ]
                 , a
-                    [ onClick Move ]
+                    [ onClick MoveParts ]
                     [ img [ class "change", src "../public/move.JPEG" ] [] ]
                 ]
             , div
                 [ class "phrase-input" ]
-                [ input [ placeholder "くちぐせを入れてね", value phrase, onInput Phrase ] []
+                [ input [ placeholder "くちぐせを入れてね", value phrase, onInput ChangePhrase ] []
                 ]
             ]
         , viewGenerate isBuruburu phrase parts
@@ -232,10 +237,10 @@ viewMouthImg mouth =
 showImgButton : Bool -> Html Msg
 showImgButton isCreatedImg =
     if isCreatedImg then
-        button [ onClick Reset ] [ text "リセット" ]
+        button [ onClick ResetImg ] [ text "リセット" ]
 
     else
-        button [ onClick ToImg ] [ text "画像に変換(2秒後に表示されます)" ]
+        button [ onClick SendImgToCanvas ] [ text "画像に変換(2秒後に表示されます)" ]
 
 
 
