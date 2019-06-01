@@ -32,14 +32,12 @@ app.ports.drawImage.subscribe(function(json) {
   ctx.font = "bold 32px Source Sans Pro";
   ctx.fillText(json.phrase, 120, 380);
   wait2s();
-  var rgbString = json.color.red + "," + json.color.green + "," + json.color.blue
-   // + "," json.color.green + "," json.color.blue
   async function wait2s() {
     try {
       await wait(2);
       var png = canvas.toDataURL();
       document.getElementById("new-img").src = png;
-      document.getElementById("new-img").style = "background:rgba(" + rgbString + ")";
+      document.getElementById("new-img").style = "background:hsla(" + json.hue + ", 94%, 49%, 1.0)";
       document.getElementById("download").href = png;
     } catch (err) {
       console.error(err);

@@ -22,7 +22,7 @@ port resetImg : String -> Cmd msg
 
 type alias Model =
     { parts : Parts
-    , rgb : Rgb
+    , hue : Int
     , phrase : String
     , isCreatedImg : Bool
     , isPousedRandom : Bool
@@ -51,7 +51,7 @@ type Face
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model (Parts Warota 0 0) (Rgb 239 103 63) "" False True False, Cmd.none )
+    ( Model (Parts Warota 0 0) 0 "" False True False, Cmd.none )
 
 
 
@@ -62,7 +62,7 @@ type Msg
     = ChangePhrase String
     | ChangeFace
     | ChangeColorRandom
-    | ChangedColor Rgb
+    | ChangedColor Int
     | ChangeEye
     | ChangeMouth
     | SendImgToCanvas
@@ -74,7 +74,7 @@ type Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg ({ parts, rgb, phrase, isPousedRandom, isBuruburu } as model) =
+update msg ({ parts, hue, phrase, isPousedRandom, isBuruburu } as model) =
     let
         { face, eye, mouth } =
             parts
@@ -96,10 +96,10 @@ update msg ({ parts, rgb, phrase, isPousedRandom, isBuruburu } as model) =
             ( { model | parts = Parts newFace eye mouth }, Cmd.none )
 
         ChangeColorRandom ->
-            ( model, Random.generate ChangedColor (Random.map3 Rgb (Random.int 0 255) (Random.int 0 255) (Random.int 0 255)) )
+            ( model, Random.generate ChangedColor <| Random.int 0 360 )
 
-        ChangedColor newRgb ->
-            ( { model | rgb = newRgb }, Cmd.none )
+        ChangedColor newDeg ->
+            ( { model | hue = newDeg }, Cmd.none )
 
         ChangeEye ->
             ( { model | parts = Parts face (eye + 1) mouth }, Cmd.none )
@@ -108,7 +108,7 @@ update msg ({ parts, rgb, phrase, isPousedRandom, isBuruburu } as model) =
             ( { model | parts = Parts face eye (mouth + 1) }, Cmd.none )
 
         SendImgToCanvas ->
-            ( { model | isCreatedImg = True }, drawImage <| partsEncoder parts rgb )
+            ( { model | isCreatedImg = True }, drawImage <| partsEncoder parts hue )
 
         ResetImg ->
             ( { model | isCreatedImg = False }, resetImg "リセット" )
@@ -126,14 +126,11 @@ update msg ({ parts, rgb, phrase, isPousedRandom, isBuruburu } as model) =
             ( { model | isBuruburu = not isBuruburu }, Cmd.none )
 
 
-partsEncoder : Parts -> Rgb -> JE.Value
-partsEncoder parts rgb =
+partsEncoder : Parts -> Int -> JE.Value
+partsEncoder parts hue =
     let
         { face, eye, mouth } =
             parts
-
-        { red, green, blue } =
-            rgb
 
         faceFileName =
             case face of
@@ -145,7 +142,7 @@ partsEncoder parts rgb =
     in
     JE.object
         [ ( "face", JE.string faceFileName )
-        , ( "color", JE.object [ ( "red", JE.int red ), ( "green", JE.int green ), ( "blue", JE.int blue ) ] )
+        , ( "hue", JE.int hue )
         , ( "eye", JE.int <| modBy 5 eye )
         , ( "mouth", JE.int <| modBy 3 mouth )
         ]
@@ -169,7 +166,7 @@ subscriptions model =
 
 
 view : Model -> Html Msg
-view { phrase, parts, isCreatedImg, isBuruburu, rgb } =
+view { phrase, parts, isCreatedImg, isBuruburu, hue } =
     div []
         [ div [ class "header" ]
             [ h1 []
@@ -200,7 +197,7 @@ view { phrase, parts, isCreatedImg, isBuruburu, rgb } =
                 ]
             ]
         , div []
-            [ viewGenerate isBuruburu phrase parts rgb
+            [ viewGenerate isBuruburu phrase parts hue
             , div [] [ showImgButton isCreatedImg ]
             , div []
                 [ img [ id "new-img" ] []
@@ -212,15 +209,15 @@ view { phrase, parts, isCreatedImg, isBuruburu, rgb } =
         ]
 
 
-viewGenerate : Bool -> String -> Parts -> Rgb -> Html Msg
-viewGenerate isBuruburu phrase parts rgb =
+viewGenerate : Bool -> String -> Parts -> Int -> Html Msg
+viewGenerate isBuruburu phrase parts hue =
     let
         { face, eye, mouth } =
             parts
     in
     if isBuruburu then
         div [ class "generate", id "buruburu" ]
-            [ viewFaceImg face rgb
+            [ viewFaceImg face hue
             , viewEyeImg eye
             , viewMouthImg mouth
             , h1 [] [ validatePhrase phrase ]
@@ -228,7 +225,7 @@ viewGenerate isBuruburu phrase parts rgb =
 
     else
         div [ class "generate" ]
-            [ viewFaceImg face rgb
+            [ viewFaceImg face hue
             , viewEyeImg eye
             , viewMouthImg mouth
             , h1 [] [ validatePhrase phrase ]
@@ -244,20 +241,9 @@ validatePhrase phrase =
         text phrase
 
 
-viewFaceImg : Face -> Rgb -> Html Msg
-viewFaceImg face rgb =
+viewFaceImg : Face -> Int -> Html Msg
+viewFaceImg face hue =
     let
-        { red, green, blue } =
-            rgb
-
-        rgbaString =
-            String.join ","
-                [ String.fromInt red
-                , String.fromInt green
-                , String.fromInt blue
-                , "1.0"
-                ]
-
         newFace =
             case face of
                 Warota ->
@@ -266,7 +252,7 @@ viewFaceImg face rgb =
                 Ane ->
                     "a-ne"
     in
-    img [ class "face", style "background" <| "rgba(" ++ rgbaString ++ ")", src <| "../public/" ++ newFace ++ ".PNG" ] []
+    img [ class "face", style "background" <| "hsla(" ++ String.fromInt hue ++ ", 94%, 49%, 1.0)", src <| "../public/" ++ newFace ++ ".PNG" ] []
 
 
 viewEyeImg : Int -> Html Msg
