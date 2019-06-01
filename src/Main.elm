@@ -250,11 +250,12 @@ viewFaceImg face rgb =
         { red, green, blue } =
             rgb
 
-        rgbString =
+        rgbaString =
             String.join ","
                 [ String.fromInt red
                 , String.fromInt green
                 , String.fromInt blue
+                , "1.0"
                 ]
 
         newFace =
@@ -265,7 +266,7 @@ viewFaceImg face rgb =
                 Ane ->
                     "a-ne"
     in
-    img [ class "face", style "background" <| "rgba(" ++ rgbString ++ ")", src <| "../public/" ++ newFace ++ ".PNG" ] []
+    img [ class "face", style "background" <| "rgba(" ++ rgbaString ++ ")", src <| "../public/" ++ newFace ++ ".PNG" ] []
 
 
 viewEyeImg : Int -> Html Msg
