@@ -108,7 +108,7 @@ update msg ({ parts, hue, phrase, isPousedRandom, isBuruburu } as model) =
             ( { model | parts = Parts face eye (mouth + 1) }, Cmd.none )
 
         SendImgToCanvas ->
-            ( { model | isCreatedImg = True }, drawImage <| partsEncoder parts hue )
+            ( { model | isCreatedImg = True }, drawImage <| partsEncoder parts hue phrase )
 
         ResetImg ->
             ( { model | isCreatedImg = False }, resetImg "リセット" )
@@ -126,8 +126,8 @@ update msg ({ parts, hue, phrase, isPousedRandom, isBuruburu } as model) =
             ( { model | isBuruburu = not isBuruburu }, Cmd.none )
 
 
-partsEncoder : Parts -> Int -> JE.Value
-partsEncoder parts hue =
+partsEncoder : Parts -> Int -> String -> JE.Value
+partsEncoder parts hue phrase =
     let
         { face, eye, mouth } =
             parts
@@ -145,6 +145,7 @@ partsEncoder parts hue =
         , ( "hue", JE.int hue )
         , ( "eye", JE.int <| modBy 5 eye )
         , ( "mouth", JE.int <| modBy 3 mouth )
+        , ( "phrase", JE.string phrase )
         ]
 
 
@@ -204,7 +205,7 @@ view { phrase, parts, isCreatedImg, isBuruburu, hue } =
                 , a [ id "download", download "output.PNG" ] [ text "画像をダウンロード" ]
                 ]
             , div []
-                [ canvas [ id "generate-canvas", width 400, height 390 ] [] ]
+                [ canvas [ id "generate-canvas", width 400, height 450 ] [] ]
             ]
         ]
 

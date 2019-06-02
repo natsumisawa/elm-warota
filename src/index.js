@@ -15,7 +15,7 @@ app.ports.drawImage.subscribe(function(json) {
   /* 背景色セット */
   ctx.beginPath();
   ctx.fillStyle = "hsla(" + json.hue + ", 94%, 49%, 1.0)";
-  ctx.fillRect(30, 0, canvas.width, canvas.height);
+  ctx.fillRect(30, 0, canvas.width, canvas.height -60);
   /* PartsのImageオブジェクトを生成して描画 */
   ctx.beginPath();
   let faceImg = new Image();
@@ -34,7 +34,11 @@ app.ports.drawImage.subscribe(function(json) {
   eyeImg.src = "../public/eye" + json.eye + ".PNG";
   mouthImg.src = "../public/mouth" + json.mouth + ".PNG";
   ctx.font = "bold 32px Source Sans Pro";
-  ctx.fillText(json.phrase, 120, 380);
+  ctx.fillStyle = "white";
+  ctx.fillRect(30, canvas.height - 60, canvas.width, canvas.height);
+  ctx.fillStyle = "black";
+  // ctx.textAlign = "center";
+  ctx.fillText(json.phrase, 50, canvas.height - 10, canvas.width - 100);
   setImgAfterwait();
   async function setImgAfterwait() {
     try {
