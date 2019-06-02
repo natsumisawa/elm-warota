@@ -204,7 +204,7 @@ view { phrase, parts, isCreatedImg, isBuruburu, hue } =
                 , a [ id "download", download "output.PNG" ] [ text "画像をダウンロード" ]
                 ]
             , div []
-                [ canvas [ id "generate-canvas", width 370, height 390 ] [] ]
+                [ canvas [ id "generate-canvas", width 400, height 390 ] [] ]
             ]
         ]
 
@@ -271,7 +271,7 @@ showImgButton isCreatedImg =
         button [ onClick ResetImg ] [ text "リセット" ]
 
     else
-        button [ onClick SendImgToCanvas ] [ text "画像に変換(2秒後に表示されます)" ]
+        button [ onClick SendImgToCanvas ] [ text "画像に変換" ]
 
 
 
