@@ -68,8 +68,8 @@ type Msg
     | SendImgToCanvas
     | ResetImg
     | MoveParts
-    | ToggleGeneratePartsRandomly
-    | GeneratePartsRandomly Time.Posix
+    | ToggleGenerateWarotaRandomly
+    | GenerateWarotaRandomly Time.Posix
     | GeneratedParts Parts
 
 
@@ -96,7 +96,7 @@ update msg ({ parts, hue, phrase, isPousedRandom, isBuruburu } as model) =
             ( { model | parts = Parts newFace eye mouth }, Cmd.none )
 
         ChangeColorRandom ->
-            ( model, Random.generate ChangedColor <| Random.int 0 360 )
+            ( model, generateRandomColor )
 
         ChangedColor newDeg ->
             ( { model | hue = newDeg }, Cmd.none )
@@ -113,11 +113,11 @@ update msg ({ parts, hue, phrase, isPousedRandom, isBuruburu } as model) =
         ResetImg ->
             ( { model | isCreatedImg = False }, resetImg "リセット" )
 
-        ToggleGeneratePartsRandomly ->
+        ToggleGenerateWarotaRandomly ->
             ( { model | isPousedRandom = not isPousedRandom }, Cmd.none )
 
-        GeneratePartsRandomly _ ->
-            ( { model | isCreatedImg = False }, Random.generate GeneratedParts (Random.map3 Parts (Random.uniform Warota [ Ane ]) (Random.int 0 5) (Random.int 0 2)) )
+        GenerateWarotaRandomly _ ->
+            ( { model | isCreatedImg = False }, Cmd.batch [ generateRandomParts, generateRandomColor ] )
 
         GeneratedParts p ->
             ( { model | parts = p }, Cmd.none )
@@ -149,6 +149,16 @@ partsEncoder parts hue phrase =
         ]
 
 
+generateRandomColor : Cmd Msg
+generateRandomColor =
+    Random.generate ChangedColor <| Random.int 0 360
+
+
+generateRandomParts : Cmd Msg
+generateRandomParts =
+    Random.generate GeneratedParts (Random.map3 Parts (Random.uniform Warota [ Ane ]) (Random.int 0 5) (Random.int 0 2))
+
+
 
 ---- SUBSCRIPTIONS ----
 
@@ -159,7 +169,7 @@ subscriptions model =
         Sub.none
 
     else
-        Time.every 100 GeneratePartsRandomly
+        Time.every 100 GenerateWarotaRandomly
 
 
 
@@ -186,7 +196,7 @@ view { phrase, parts, isCreatedImg, isBuruburu, hue } =
                     [ onClick ChangeMouth ]
                     [ img [ class "change", src "../public/mouth-button.JPEG" ] [] ]
                 , a
-                    [ onClick ToggleGeneratePartsRandomly ]
+                    [ onClick ToggleGenerateWarotaRandomly ]
                     [ img [ class "change", src "../public/random.JPEG" ] [] ]
                 , a
                     [ onClick MoveParts ]

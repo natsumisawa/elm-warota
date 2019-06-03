@@ -25,10 +25,10 @@ app.ports.drawImage.subscribe(function(json) {
     ctx.drawImage(faceImg, 0, 0);
   }, false);
   eyeImg.addEventListener("load", function() {
-    ctx.drawImage(eyeImg, 100, 20);
+    ctx.drawImage(eyeImg, 60, 20);
   }, false);
   mouthImg.addEventListener("load", function() {
-    ctx.drawImage(mouthImg, 120, 90);
+    ctx.drawImage(mouthImg, 120, 110);
   }, false);
   faceImg.src = "../public/" + json.face + ".PNG";
   eyeImg.src = "../public/eye" + json.eye + ".PNG";
