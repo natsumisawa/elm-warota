@@ -176,48 +176,52 @@ subscriptions model =
 ---- VIEW ----
 
 
-view : Model -> Html Msg
+view : Model -> Browser.Document Msg
 view { phrase, parts, isCreatedImg, isBuruburu, hue } =
-    div []
-        [ div [ class "header" ]
-            [ h1 []
-                [ text "ワロタジェネレーター" ]
-            , div [ class "change-button" ]
-                [ a
-                    [ onClick ChangeFace ]
-                    [ img [ class "change", src "../public/warota-face.JPEG" ] [] ]
-                , a
-                    [ onClick ChangeColorRandom ]
-                    [ img [ class "change", src "../public/color-button.JPEG" ] [] ]
-                , a
-                    [ onClick ChangeEye ]
-                    [ img [ class "change", src "../public/eye-button.JPEG" ] [] ]
-                , a
-                    [ onClick ChangeMouth ]
-                    [ img [ class "change", src "../public/mouth-button.JPEG" ] [] ]
-                , a
-                    [ onClick ToggleGenerateWarotaRandomly ]
-                    [ img [ class "change", src "../public/random.JPEG" ] [] ]
-                , a
-                    [ onClick MoveParts ]
-                    [ img [ class "change", src "../public/move.JPEG" ] [] ]
-                ]
-            , div
-                [ class "phrase-input" ]
-                [ input [ placeholder "くちぐせを入れてね", value phrase, onInput ChangePhrase ] []
-                ]
-            ]
-        , div []
-            [ viewGenerate isBuruburu phrase parts hue
-            , div [] [ showImgButton isCreatedImg ]
-            , div []
-                [ img [ id "new-img" ] []
-                , a [ id "download", download "output.PNG" ] [ text "画像をダウンロード" ]
+    { title = "warota generator"
+    , body =
+        [ div []
+            [ div [ class "header" ]
+                [ h1 []
+                    [ text "ワロタジェネレーター" ]
+                , div [ class "change-button" ]
+                    [ a
+                        [ onClick ChangeFace ]
+                        [ img [ class "change", src "assets/images/warota-face.JPEG" ] [] ]
+                    , a
+                        [ onClick ChangeColorRandom ]
+                        [ img [ class "change", src "assets/images/color-button.JPEG" ] [] ]
+                    , a
+                        [ onClick ChangeEye ]
+                        [ img [ class "change", src "assets/images/eye-button.JPEG" ] [] ]
+                    , a
+                        [ onClick ChangeMouth ]
+                        [ img [ class "change", src "assets/images/mouth-button.JPEG" ] [] ]
+                    , a
+                        [ onClick ToggleGenerateWarotaRandomly ]
+                        [ img [ class "change", src "assets/images/random.JPEG" ] [] ]
+                    , a
+                        [ onClick MoveParts ]
+                        [ img [ class "change", src "assets/images/move.JPEG" ] [] ]
+                    ]
+                , div
+                    [ class "phrase-input" ]
+                    [ input [ placeholder "くちぐせを入れてね", value phrase, onInput ChangePhrase ] []
+                    ]
                 ]
             , div []
-                [ canvas [ id "generate-canvas", width 400, height 450 ] [] ]
+                [ viewGenerate isBuruburu phrase parts hue
+                , div [ class "show-img-button" ] [ showImgButton isCreatedImg ]
+                , div []
+                    [ img [ id "new-img" ] []
+                    , a [ id "download", download "output.PNG" ] [ text "画像をダウンロード" ]
+                    ]
+                , div []
+                    [ canvas [ id "generate-canvas", width 400, height 450 ] [] ]
+                ]
             ]
         ]
+    }
 
 
 viewGenerate : Bool -> String -> Parts -> Int -> Html Msg
@@ -263,17 +267,17 @@ viewFaceImg face hue =
                 Ane ->
                     "a-ne"
     in
-    img [ class "face", style "background" <| "hsla(" ++ String.fromInt hue ++ ", 94%, 49%, 1.0)", src <| "../public/" ++ newFace ++ ".PNG" ] []
+    img [ class "face", style "background" <| "hsla(" ++ String.fromInt hue ++ ", 94%, 49%, 1.0)", src <| "assets/images/" ++ newFace ++ ".PNG" ] []
 
 
 viewEyeImg : Int -> Html Msg
 viewEyeImg eye =
-    img [ class "eye", src <| "../public/eye" ++ String.fromInt (modBy 5 eye) ++ ".PNG" ] []
+    img [ class "eye", src <| "assets/images/eye" ++ String.fromInt (modBy 5 eye) ++ ".PNG" ] []
 
 
 viewMouthImg : Int -> Html Msg
 viewMouthImg mouth =
-    img [ class "mouth", src <| "../public/mouth" ++ String.fromInt (modBy 3 mouth) ++ ".PNG" ] []
+    img [ class "mouth", src <| "assets/images/mouth" ++ String.fromInt (modBy 3 mouth) ++ ".PNG" ] []
 
 
 showImgButton : Bool -> Html Msg
@@ -291,7 +295,7 @@ showImgButton isCreatedImg =
 
 main : Program () Model Msg
 main =
-    Browser.element
+    Browser.document
         { view = view
         , init = \_ -> init
         , update = update

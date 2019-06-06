@@ -1,26 +1,26 @@
 {
-  "name": "elm-dev-env",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
-  "dependencies": {},
   "scripts": {
-    "build": "webpack",
-    "start": "webpack-dev-server",
-    "test": "elm-test"
+    "copy:html": "ncp ./src/index.html ./out/index.html",
+    "copy:js": "ncp ./src/main.js ./out/main.js",
+    "copy:assets": "ncp ./src/assets ./out/assets",
+    "copy": "mkdirp out && npm-run-all -p copy:*",
+    "watch:elm": "elm-live ./src/Main.elm --open --start-page=index.html --dir=out -- --output=./out/elm.js --debug",
+    "watch:sass": "npm run build:sass && node-sass -w --include-path scss ./src/style.scss ./out/style.css",
+    "watch": "npm-run-all -p watch:*",
+    "start": "npm-run-all -s copy watch",
+    "test": "elm-test",
+    "build:elm": "elm make src/Main.elm --output=./out/elm.js",
+    "build:sass": "node-sass --include-path scss ./src/style.scss ./out/style.css",
+    "build-all": "npm-run-all -p build:*",
+    "build": "npm-run-all -s copy build-all"
   },
   "devDependencies": {
-    "css-loader": "^2.1.1",
-    "elm": "^0.19.0",
-    "elm-test": "0.19.0",
-    "elm-webpack-loader": "^5.0.0",
-    "html-webpack-plugin": "^3.2.0",
+    "browser-sync": "^2.26.5",
+    "elm": "^0.19.0-no-deps",
+    "elm-test": "^0.19.0-rev6",
+    "elm-live": "^3.4.1",
     "node-sass": "^4.12.0",
-    "sass-loader": "^7.0.3",
-    "style-loader": "^0.20.3",
-    "url-loader": "^1.1.1",
-    "webpack": "^4.17.1",
-    "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.4.1"
+    "ncp": "^2.0.0",
+    "npm-run-all": "^4.1.5"
   }
 }

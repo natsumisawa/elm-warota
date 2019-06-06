@@ -1,0 +1,74 @@
+button {
+  font-size: 1em;
+  background: #5590DD;
+  color: #fff;
+  margin-bottom: 16px;
+  font-weight: 300;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer; }
+
+[data-elm-hot="true"] {
+  height: inherit; }
+
+div.header {
+  height: 250px;
+  background-color: #2E9B7D;
+  color: #FFFFFF;
+  padding: 50px; }
+
+div.phrase-input > h1 {
+  font-size: 30px;
+  color: #000000;
+  margin: 10px; }
+
+img.change {
+  border-radius: 50%;
+  box-shadow: 2px 2px #000000;
+  margin: 10px; }
+
+body {
+  font-family: 'Source Sans Pro', 'Trebuchet MS', 'Lucida Grande', 'Bitstream Vera Sans', 'Helvetica Neue', sans-serif;
+  margin: 0;
+  text-align: center;
+  color: #293c4b; }
+
+img {
+  margin-top: 20px; }
+
+#buruburu {
+  display: inline-block;
+  animation: buruburu .1s  infinite; }
+
+@keyframes buruburu {
+  0% {
+    transform: translate(0px, 0px) rotateZ(0deg); }
+  25% {
+    transform: translate(2px, 2px) rotateZ(1deg); }
+  50% {
+    transform: translate(0px, 2px) rotateZ(0deg); }
+  75% {
+    transform: translate(2px, 0px) rotateZ(-1deg); }
+  100% {
+    transform: translate(0px, 0px) rotateZ(0deg); } }
+
+div.generate {
+  position: relative;
+  display: inline-block; }
+
+img.eye {
+  position: absolute;
+  left: 15%;
+  top: 5%; }
+
+img.mouth {
+  position: absolute;
+  left: 30%;
+  top: 25%; }
+
+#generate-canvas {
+  visibility: hidden; }
+
+#new-img {
+  display: inline-block;
+  left: 70%; }

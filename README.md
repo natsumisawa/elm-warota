@@ -1,26 +1,33 @@
-# Elm Develop Environment
+# elm startfighter
 
-## Install
+## Installation
 
-```shell
-$ npm i
 ```
-
-## Launch develop server
-
-```shell
+$ git clone git@github.com:ababup1192/elm-starfighter.git
+$ cd elm-startfighter
+$ npm install
 $ npm start
 ```
 
-## Test
+## build
 
-```shell
-$ npm test
+```
+$ npm run build
+// output "./out" directory
 ```
 
-## Build
+## Netlify
 
-```shell
-$ npm run build
-$ open dist/index.html
+[demo](https://elm-starfighter-abab.netlify.com)
+
+### Build command
+
+```
+npm run build
+```
+
+### Publish directory
+
+```
+out
 ```
